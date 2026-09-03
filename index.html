@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>115學年度啦啦舞彩排場地查詢｜前台唯讀版</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef3f6;color:#243240;font-family:"Microsoft JhengHei","Noto Sans TC",sans-serif}
+.app{max-width:1400px;margin:auto;padding:22px}
+.hero{background:linear-gradient(135deg,#17324d,#28688f);color:white;padding:26px 30px;border-radius:18px;margin-bottom:16px}
+.hero h1{margin:0 0 6px;font-size:29px}.hero p{margin:0;opacity:.92}
+.card{background:white;border-radius:14px;padding:18px 20px;margin-bottom:15px;box-shadow:0 4px 14px #0000000d}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.grow{flex:1}
+button,select{font:inherit;border:1px solid #c8d3dc;border-radius:8px;padding:9px 11px;background:white}
+button{cursor:pointer;font-weight:700}.primary,.tab.active{background:#245d85;color:white;border-color:#245d85}
+.filter-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.field label{display:block;font-size:13px;font-weight:700;color:#647180;margin-bottom:5px}.field select{width:100%}
+h2{margin:0 0 12px;color:#17324d;font-size:20px}
+table{width:100%;border-collapse:collapse}th,td{border:1px solid #d7e0e8;padding:8px;text-align:center;vertical-align:middle}
+th{background:#eaf4fb;color:#17324d}.wrap{overflow:auto}
+.booking{display:block;background:#edf7f5;color:#27675f;border-radius:5px;margin:3px 0;padding:4px;font-weight:700;font-size:13px}
+.empty{text-align:center;padding:34px;color:#7b8792}.sub{color:#6e7a86;font-size:13px;margin-top:-6px;margin-bottom:12px}
+.kpi{display:inline-block;background:#f1f5f8;border-radius:18px;padding:5px 10px;margin-right:6px;font-size:13px}
+.notice{background:#eef8ee;border-left:4px solid #4b9561;padding:10px 12px;font-size:13px;margin-top:12px}
+.conflict{background:#fff0f0!important}.warn{color:#b33;font-weight:700}
+@media(max-width:900px){.filter-grid{grid-template-columns:1fr 1fr}.app{padding:10px}}
+@page{size:A4 landscape;margin:10mm}
+@media print{body{background:white}.app{max-width:none;padding:0}.screen-only,.hero{display:none!important}.card{box-shadow:none;padding:0;margin:0}table{font-size:9.5pt}th,td{padding:5px}}
+</style>
+</head>
+<body><div class="app">
+<header class="hero">
+<h1>115學年度啦啦舞彩排場地查詢</h1>
+<p>前台唯讀版｜最新資料已更新｜僅供查詢與列印</p>
+</header>
+
+<section class="card screen-only">
+<div class="toolbar">
+<button class="tab active" data-v="list">借用查詢</button>
+<button class="tab" data-v="location">地點總覽</button>
+<button class="tab" data-v="all">全部資料</button>
+<div class="grow"></div>
+<button class="primary" onclick="window.print()">列印目前畫面</button>
+</div>
+<div class="filter-grid">
+<div class="field"><label>班級</label><select id="fClass"></select></div>
+<div class="field"><label>日期</label><select id="fDate"></select></div>
+<div class="field"><label>節次</label><select id="fPeriod"></select></div>
+<div class="field"><label>地點</label><select id="fLocation"></select></div>
+</div>
+<div class="notice">可選「全部」搭配查詢，例如：203班＋全部日期，或全部班級＋韻律教室。</div>
+</section>
+
+<section class="card"><h2 id="title"></h2><div class="sub" id="sub"></div><div id="content"></div></section>
+</div>
+
+<script>
+const C=["201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "213", "214"];
+const L=["操場", "禮堂前", "體育組前", "活動中心前", "韻律教室"];
+const D=[{"value": "2026-09-03", "label": "09/03（四）"}, {"value": "2026-09-04", "label": "09/04（五）"}, {"value": "2026-09-07", "label": "09/07（一）"}, {"value": "2026-09-08", "label": "09/08（二）"}, {"value": "2026-09-09", "label": "09/09（三）"}, {"value": "2026-09-10", "label": "09/10（四）"}, {"value": "2026-09-11", "label": "09/11（五）"}];
+const P=["第1節", "第2節", "第3節", "第4節", "第5節", "第6節", "第7節", "第8節"];
+const A=[{"id": 1, "cls": "211", "date": "2026-09-03", "period": "第2節", "location": "禮堂前", "note": ""}, {"id": 2, "cls": "213", "date": "2026-09-03", "period": "第4節", "location": "禮堂前", "note": ""}, {"id": 3, "cls": "205", "date": "2026-09-03", "period": "第6節", "location": "禮堂前", "note": ""}, {"id": 4, "cls": "204", "date": "2026-09-03", "period": "第6節", "location": "活動中心前", "note": ""}, {"id": 5, "cls": "208", "date": "2026-09-04", "period": "第2節", "location": "禮堂前", "note": ""}, {"id": 6, "cls": "204", "date": "2026-09-04", "period": "第2節", "location": "活動中心前", "note": ""}, {"id": 7, "cls": "201", "date": "2026-09-04", "period": "第2節", "location": "韻律教室", "note": ""}, {"id": 8, "cls": "209", "date": "2026-09-04", "period": "第5節", "location": "操場", "note": ""}, {"id": 9, "cls": "203", "date": "2026-09-04", "period": "第5節", "location": "活動中心前", "note": ""}, {"id": 10, "cls": "210", "date": "2026-09-04", "period": "第5節", "location": "韻律教室", "note": ""}, {"id": 11, "cls": "210", "date": "2026-09-04", "period": "第6節", "location": "操場", "note": ""}, {"id": 12, "cls": "205", "date": "2026-09-04", "period": "第6節", "location": "禮堂前", "note": ""}, {"id": 13, "cls": "212", "date": "2026-09-04", "period": "第6節", "location": "活動中心前", "note": ""}, {"id": 14, "cls": "203", "date": "2026-09-07", "period": "第1節", "location": "禮堂前", "note": ""}, {"id": 15, "cls": "208", "date": "2026-09-07", "period": "第1節", "location": "體育組前", "note": ""}, {"id": 16, "cls": "212", "date": "2026-09-07", "period": "第1節", "location": "活動中心前", "note": ""}, {"id": 17, "cls": "207", "date": "2026-09-07", "period": "第2節", "location": "操場", "note": ""}, {"id": 18, "cls": "213", "date": "2026-09-07", "period": "第5節", "location": "禮堂前", "note": ""}, {"id": 19, "cls": "204", "date": "2026-09-07", "period": "第6節", "location": "禮堂前", "note": ""}, {"id": 20, "cls": "205", "date": "2026-09-07", "period": "第7節", "location": "禮堂前", "note": ""}, {"id": 21, "cls": "210", "date": "2026-09-07", "period": "第7節", "location": "體育組前", "note": ""}, {"id": 22, "cls": "206", "date": "2026-09-07", "period": "第7節", "location": "活動中心前", "note": ""}, {"id": 23, "cls": "210", "date": "2026-09-08", "period": "第2節", "location": "禮堂前", "note": ""}, {"id": 24, "cls": "211", "date": "2026-09-08", "period": "第2節", "location": "活動中心前", "note": ""}, {"id": 25, "cls": "207", "date": "2026-09-08", "period": "第3節", "location": "操場", "note": ""}, {"id": 26, "cls": "204", "date": "2026-09-08", "period": "第3節", "location": "韻律教室", "note": ""}, {"id": 27, "cls": "201", "date": "2026-09-08", "period": "第4節", "location": "操場", "note": ""}, {"id": 28, "cls": "203", "date": "2026-09-08", "period": "第4節", "location": "禮堂前", "note": ""}, {"id": 29, "cls": "202", "date": "2026-09-08", "period": "第4節", "location": "體育組前", "note": ""}, {"id": 30, "cls": "206", "date": "2026-09-08", "period": "第4節", "location": "活動中心前", "note": ""}, {"id": 31, "cls": "204", "date": "2026-09-08", "period": "第4節", "location": "韻律教室", "note": ""}, {"id": 32, "cls": "207", "date": "2026-09-08", "period": "第5節", "location": "操場", "note": ""}, {"id": 33, "cls": "208", "date": "2026-09-08", "period": "第5節", "location": "韻律教室", "note": ""}, {"id": 34, "cls": "211", "date": "2026-09-08", "period": "第6節", "location": "禮堂前", "note": ""}, {"id": 35, "cls": "208", "date": "2026-09-08", "period": "第6節", "location": "韻律教室", "note": ""}, {"id": 36, "cls": "209", "date": "2026-09-08", "period": "第7節", "location": "禮堂前", "note": ""}, {"id": 37, "cls": "208", "date": "2026-09-08", "period": "第7節", "location": "韻律教室", "note": ""}, {"id": 38, "cls": "212", "date": "2026-09-09", "period": "第2節", "location": "韻律教室", "note": ""}, {"id": 39, "cls": "201", "date": "2026-09-09", "period": "第5節", "location": "操場", "note": ""}, {"id": 40, "cls": "203", "date": "2026-09-09", "period": "第5節", "location": "禮堂前", "note": ""}, {"id": 41, "cls": "213", "date": "2026-09-09", "period": "第5節", "location": "體育組前", "note": ""}, {"id": 42, "cls": "212", "date": "2026-09-09", "period": "第5節", "location": "活動中心前", "note": ""}, {"id": 43, "cls": "206", "date": "2026-09-09", "period": "第6節", "location": "禮堂前", "note": ""}, {"id": 44, "cls": "202", "date": "2026-09-09", "period": "第6節", "location": "體育組前", "note": ""}, {"id": 45, "cls": "207", "date": "2026-09-09", "period": "第6節", "location": "韻律教室", "note": ""}, {"id": 46, "cls": "213", "date": "2026-09-09", "period": "第7節", "location": "禮堂前", "note": ""}, {"id": 47, "cls": "209", "date": "2026-09-09", "period": "第7節", "location": "韻律教室", "note": ""}, {"id": 48, "cls": "206", "date": "2026-09-10", "period": "第2節", "location": "韻律教室", "note": ""}, {"id": 49, "cls": "211", "date": "2026-09-10", "period": "第5節", "location": "操場", "note": ""}, {"id": 50, "cls": "203", "date": "2026-09-10", "period": "第5節", "location": "禮堂前", "note": ""}, {"id": 51, "cls": "210", "date": "2026-09-10", "period": "第5節", "location": "體育組前", "note": ""}, {"id": 52, "cls": "205", "date": "2026-09-10", "period": "第5節", "location": "韻律教室", "note": ""}, {"id": 53, "cls": "209", "date": "2026-09-10", "period": "第6節", "location": "韻律教室", "note": ""}, {"id": 54, "cls": "211", "date": "2026-09-11", "period": "第5節", "location": "韻律教室", "note": ""}];
+let V="list";
+const $=x=>document.getElementById(x);
+const E=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dl=d=>(D.find(x=>x.value===d)||{}).label||d;
+function optS(el,a){el.innerHTML=["全部",...a].map(v=>`<option value="${E(v)}">${E(v)}</option>`).join("")}
+function optD(el){el.innerHTML=[{value:"全部",label:"全部日期"},...D].map(v=>`<option value="${E(v.value)}">${E(v.label)}</option>`).join("")}
+optS($("fClass"),C);optD($("fDate"));optS($("fPeriod"),P);optS($("fLocation"),L);
+
+function sortR(a,b){return a.date.localeCompare(b.date)||P.indexOf(a.period)-P.indexOf(b.period)||a.location.localeCompare(b.location,"zh-Hant")||a.cls.localeCompare(b.cls,undefined,{numeric:true})}
+function filtered(){let c=$("fClass").value,d=$("fDate").value,p=$("fPeriod").value,l=$("fLocation").value;return A.filter(r=>(c==="全部"||r.cls===c)&&(d==="全部"||r.date===d)&&(p==="全部"||r.period===p)&&(l==="全部"||r.location===l)).sort(sortR)}
+function desc(){return [ $("fClass").value==="全部"?"全部班級":$("fClass").value+"班", $("fDate").value==="全部"?"全部日期":dl($("fDate").value), $("fPeriod").value==="全部"?"全部節次":$("fPeriod").value, $("fLocation").value==="全部"?"全部地點":$("fLocation").value ].join("｜")}
+
+function list(){let R=filtered();$("title").textContent="彩排借用查詢";$("sub").innerHTML=`<span class=kpi>${desc()}</span><span class=kpi>共 ${R.length} 筆</span>`;if(!R.length)return $("content").innerHTML='<div class=empty>目前沒有符合條件的借用資料。</div>';let h='<div class=wrap><table><tr><th>班級</th><th>日期</th><th>節次</th><th>地點</th></tr>';R.forEach(r=>h+=`<tr><td><b>${r.cls}班</b></td><td>${dl(r.date)}</td><td>${r.period}</td><td>${r.location}</td></tr>`);$("content").innerHTML=h+"</table></div>"}
+function loc(){let c=$("fClass").value,d=$("fDate").value,p=$("fPeriod").value,l=$("fLocation").value,LS=l==="全部"?L:[l],DS=d==="全部"?D:D.filter(x=>x.value===d);$("title").textContent=l==="全部"?"各地點借用總覽":l+" 借用總覽";$("sub").textContent=desc();let h='<div class=wrap><table><tr><th>地點</th>'+DS.map(x=>`<th>${x.label}</th>`).join("")+"</tr>";LS.forEach(q=>{h+=`<tr><th>${q}</th>`;DS.forEach(x=>{let R=A.filter(r=>r.location===q&&r.date===x.value&&(c==="全部"||r.cls===c)&&(p==="全部"||r.period===p)).sort(sortR),g={};R.forEach(r=>(g[r.period]??=[]).push(r));let cf=Object.values(g).some(z=>z.length>1);h+=`<td class="${cf?"conflict":""}">`+(R.length?R.map(r=>`<span class=booking>${r.cls}班｜${r.period}</span>`).join(""):"—")+(cf?'<span class=warn>⚠ 時段重複</span>':"")+"</td>"});h+="</tr>"});$("content").innerHTML=h+"</table></div>"}
+function all(){let R=[...A].sort(sortR);$("title").textContent="全部彩排借用資料";$("sub").textContent="目前共 "+R.length+" 筆";let h='<div class=wrap><table><tr><th>#</th><th>班級</th><th>日期</th><th>節次</th><th>地點</th></tr>';R.forEach((r,i)=>h+=`<tr><td>${i+1}</td><td><b>${r.cls}班</b></td><td>${dl(r.date)}</td><td>${r.period}</td><td>${r.location}</td></tr>`);$("content").innerHTML=h+"</table></div>"}
+function render(){V==="list"?list():V==="location"?loc():all()}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{V=b.dataset.v;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));render()});
+["fClass","fDate","fPeriod","fLocation"].forEach(id=>$(id).onchange=render);
+render();
+</script></body></html>
