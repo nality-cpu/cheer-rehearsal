@@ -18,12 +18,14 @@ table{width:100%;border-collapse:collapse}th,td{border:1px solid var(--line);pad
 .tt .slot{background:#eaf4fd;height:75px;min-width:125px;text-align:left;padding:9px;vertical-align:top}.tt .slot.empty-slot{background:#f6f6f6}
 .class-chip{display:block;background:rgba(255,255,255,.86);border-radius:5px;padding:5px 7px;margin-bottom:4px;color:#1f67a0;font-weight:800;text-align:center}
 .period-side{display:flex;gap:4px;align-items:stretch}.section-label{writing-mode:vertical-rl;text-orientation:upright;background:var(--purple);color:white;border-radius:5px;padding:8px 6px;font-weight:800;letter-spacing:2px}
-@media(max-width:800px){.app{padding:9px}.hero h1{font-size:24px}}
+.overview-table th{position:sticky;top:0;z-index:1}.overview-table td{line-height:1.45}.overview-table .date-cell{font-weight:800;color:#245f88}.overview-table .period-cell{white-space:normal}
+@media(max-width:800px){.app{padding:9px}.hero h1{font-size:24px}.overview-table{font-size:13px}.overview-table th,.overview-table td{padding:7px 5px}}
 @media print{.hero,.screen{display:none!important}.card{box-shadow:none;border:0}.app{padding:0}}
 </style></head>
 <body><div class="app"><header class="hero"><a href="index.html" class="home">← 回系統首頁</a><h1>啦啦舞彩排練習表</h1><p>09/07～09/10｜地點：活動中心</p></header>
-<section class="card screen"><div class="toolbar"><div class="field"><label>班級</label><select id="fc"></select></div><div class="field"><label>日期</label><select id="fd"></select></div><div class="field"><label>節次／時段</label><select id="fp"></select></div><div class="grow"></div><span class="fixed-place">📍 活動中心</span><button class="primary" onclick="window.print()">列印</button></div></section>
-<section class="card"><h2>彩排練習查詢</h2><div class="sub" id="summary"></div><div id="table"></div></section>
+<section class="card screen"><div class="toolbar"><button class="tab active" data-view="list">彩排查詢</button><button class="tab" data-view="overview">完整總覽</button><div class="grow"></div><span class="fixed-place">📍 活動中心</span><button class="primary" onclick="window.print()">列印</button></div></section>
+<section id="listFilters" class="card screen"><div class="toolbar"><div class="field"><label>班級</label><select id="fc"></select></div><div class="field"><label>日期</label><select id="fd"></select></div><div class="field"><label>節次／時段</label><select id="fp"></select></div></div></section>
+<section class="card"><h2 id="viewTitle">彩排練習查詢</h2><div class="sub" id="summary"></div><div id="table"></div></section>
 <section class="card"><h2>小彩排班級安排</h2><div class="notice">
 <b>09/08（二）小彩排 16:00：</b>209、207、203、212、206、211、210班<br>
 <b>09/09（三）小彩排 16:00：</b>204、201、202、208、213、214、205班
@@ -36,11 +38,48 @@ table{width:100%;border-collapse:collapse}th,td{border:1px solid var(--line);pad
 <section class="card"><h2>彩排練習注意事項</h2><div class="notice"><ol><li>若午休彩排，請班代於12:35帶全班至活動中心外集合，逾時扣練習時間。</li><li>若16:00過後彩排，請班代提早10分鐘到活動中心外集合，逾時扣練習時間。</li><li>請確定班級出缺席情況，有請假請告知，人數確定後才能開跳。</li><li>請啦啦舞播音同學於12:30先至會場測試音響。</li></ol></div></section>
 </div><script>
 const A=[{"cls": "201", "date": "9/7(一)", "period": "時段A 16:05~16:15 12:40-12:50"}, {"cls": "207", "date": "9/7(一)", "period": "時段B 16:15~16:25 12:50-13:00"}, {"cls": "202", "date": "9/7(一)", "period": "時段C 16:25~16:35 13:00-13:10"}, {"cls": "208", "date": "9/8(二)", "period": "時段A 16:05~16:15 12:40-12:50"}, {"cls": "214", "date": "9/8(二)", "period": "時段B 16:15~16:25 12:50-13:00"}, {"cls": "209", "date": "9/8(二)", "period": "時段C 16:25~16:35 13:00-13:10"}, {"cls": "204", "date": "9/9(三)", "period": "時段A 16:05~16:15 12:40-12:50"}, {"cls": "206", "date": "9/9(三)", "period": "時段B 16:15~16:25 12:50-13:00"}, {"cls": "212", "date": "9/9(三)", "period": "時段C 16:25~16:35 13:00-13:10"}, {"cls": "205", "date": "9/10(四)", "period": "時段A 16:05~16:15 12:40-12:50"}, {"cls": "211", "date": "9/10(四)", "period": "時段B 16:15~16:25 12:50-13:00"}, {"cls": "210", "date": "9/10(四)", "period": "時段C 16:25~16:35 13:00-13:10"}, {"cls": "211", "date": "9/10(四)", "period": "時段A 16:05~16:15 12:40-12:50"}, {"cls": "203", "date": "9/10(四)", "period": "時段B 16:15~16:25 12:50-13:00"}, {"cls": "213", "date": "9/10(四)", "period": "時段C 16:25~16:35 13:00-13:10"}, {"cls": "209", "date": "9/10(四)", "period": "總彩第六節"}, {"cls": "207", "date": "9/10(四)", "period": "總彩第六節"}, {"cls": "203", "date": "9/10(四)", "period": "總彩第六節"}, {"cls": "212", "date": "9/10(四)", "period": "總彩第六節"}, {"cls": "206", "date": "9/10(四)", "period": "總彩第六節"}, {"cls": "211", "date": "9/10(四)", "period": "總彩第六節"}, {"cls": "210", "date": "9/10(四)", "period": "總彩第六節"}, {"cls": "204", "date": "9/10(四)", "period": "總彩第七節"}, {"cls": "201", "date": "9/10(四)", "period": "總彩第七節"}, {"cls": "202", "date": "9/10(四)", "period": "總彩第七節"}, {"cls": "208", "date": "9/10(四)", "period": "總彩第七節"}, {"cls": "213", "date": "9/10(四)", "period": "總彩第七節"}, {"cls": "214", "date": "9/10(四)", "period": "總彩第七節"}, {"cls": "205", "date": "9/10(四)", "period": "總彩第七節"}, {"cls": "209", "date": "9/8(二)", "period": "小彩排16:00"}, {"cls": "207", "date": "9/8(二)", "period": "小彩排16:00"}, {"cls": "203", "date": "9/8(二)", "period": "小彩排16:00"}, {"cls": "212", "date": "9/8(二)", "period": "小彩排16:00"}, {"cls": "206", "date": "9/8(二)", "period": "小彩排16:00"}, {"cls": "211", "date": "9/8(二)", "period": "小彩排16:00"}, {"cls": "210", "date": "9/8(二)", "period": "小彩排16:00"}, {"cls": "204", "date": "9/9(三)", "period": "小彩排16:00"}, {"cls": "201", "date": "9/9(三)", "period": "小彩排16:00"}, {"cls": "202", "date": "9/9(三)", "period": "小彩排16:00"}, {"cls": "208", "date": "9/9(三)", "period": "小彩排16:00"}, {"cls": "213", "date": "9/9(三)", "period": "小彩排16:00"}, {"cls": "214", "date": "9/9(三)", "period": "小彩排16:00"}, {"cls": "205", "date": "9/9(三)", "period": "小彩排16:00"}],C=["201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "213", "214"],D=["9/7(一)", "9/8(二)", "9/9(三)", "9/10(四)"],P=["時段A 16:05~16:15 12:40-12:50", "時段B 16:15~16:25 12:50-13:00", "時段C 16:25~16:35 13:00-13:10", "時段D 16:35~16:45", "時段E 16:45-17:00", "小彩排16:00", "總彩第六節", "總彩第七節"];
-const $=x=>document.getElementById(x);function fill(el,a,label){el.innerHTML=[label,...a].map(v=>`<option>${v}</option>`).join("")}
+const $=x=>document.getElementById(x);let view="list";
+function fill(el,a,label){el.innerHTML=[label,...a].map(v=>`<option>${v}</option>`).join("")}
 fill($("fc"),C,"全部班級");fill($("fd"),D,"全部日期");fill($("fp"),P,"全部節次／時段");
-function render(){let c=$("fc").value,d=$("fd").value,p=$("fp").value;let R=A.filter(r=>(c==="全部班級"||r.cls===c)&&(d==="全部日期"||r.date===d)&&(p==="全部節次／時段"||r.period===p));
-$("summary").textContent=`符合條件：${R.length} 筆｜地點固定：活動中心`;
-if(!R.length)return $("table").innerHTML='<div class="empty">目前沒有符合條件的已登記資料。</div>';
-let h='<div class="wrap"><table><tr><th>班級</th><th>日期</th><th>節次／時段</th><th>地點</th></tr>';R.forEach(r=>h+=`<tr><td><b>${r.cls}班</b></td><td>${r.date}</td><td>${r.period}</td><td><span class="tag">活動中心</span></td></tr>`);$("table").innerHTML=h+"</table></div>"}
+function dateIndex(d){return D.indexOf(d)}
+function periodIndex(p){return P.indexOf(p)}
+function renderList(){
+ let c=$("fc").value,d=$("fd").value,p=$("fp").value;let R=A.filter(r=>(c==="全部班級"||r.cls===c)&&(d==="全部日期"||r.date===d)&&(p==="全部節次／時段"||r.period===p));
+ $("viewTitle").textContent="彩排練習查詢";$("summary").textContent=`符合條件：${R.length} 筆｜地點固定：活動中心`;
+ if(!R.length)return $("table").innerHTML='<div class="empty">目前沒有符合條件的已登記資料。</div>';
+ let h='<div class="wrap"><table><tr><th>班級</th><th>日期</th><th>節次／時段</th><th>地點</th></tr>';
+ R.forEach(r=>h+=`<tr><td><b>${r.cls}班</b></td><td>${r.date}</td><td>${r.period}</td><td><span class="tag">活動中心</span></td></tr>`);$("table").innerHTML=h+"</table></div>";
+}
+function renderOverview(){
+ $("viewTitle").textContent="彩排完整總覽｜課表式";
+ $("summary").textContent="橫向為日期、直向為節次／時段；格內直接顯示班級，地點固定為活動中心。";
+ let h='<div class="wrap"><table class="tt"><tr><th colspan="2"></th>'+D.map(d=>`<th class="day">${d}</th>`).join("")+'</tr>';
+ P.forEach(p=>{
+   let label=p;
+   let time="";
+   if(p.startsWith("時段A")){label="時段A";time="12:40–12:50 / 16:05–16:15"}
+   else if(p.startsWith("時段B")){label="時段B";time="12:50–13:00 / 16:15–16:25"}
+   else if(p.startsWith("時段C")){label="時段C";time="13:00–13:10 / 16:25–16:35"}
+   else if(p.startsWith("時段D")){label="時段D";time="16:35–16:45"}
+   else if(p.startsWith("時段E")){label="時段E";time="16:45–17:00"}
+   else if(p==="小彩排16:00"){label="小彩排";time="16:00"}
+   else if(p==="總彩第六節"){label="總彩第六節";time="14:10–15:00"}
+   else if(p==="總彩第七節"){label="總彩第七節";time="15:10–16:00"}
+   h+='<tr>';
+   h+=`<th class="period-no">${label}</th><th class="time">${time.replace(" / ","<br>／<br>").replace("–","～")}</th>`;
+   D.forEach(d=>{
+     let R=A.filter(r=>r.date===d&&r.period===p).sort((a,b)=>Number(a.cls)-Number(b.cls));
+     h+=`<td class="slot ${R.length?'':'empty-slot'}">`;
+     if(R.length){
+       h+=R.map(r=>`<span class="class-chip">${r.cls}班<span class="rehearsal-loc">📍活動中心</span></span>`).join("");
+     }
+     h+='</td>';
+   });
+   h+='</tr>';
+ });
+ $("table").innerHTML=h+'</table></div>';
+}
+function render(){view==="list"?renderList():renderOverview()}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{view=b.dataset.view;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));$("listFilters").style.display=view==="list"?"block":"none";render()});
 ["fc","fd","fp"].forEach(id=>$(id).onchange=render);render();
 </script></body></html>

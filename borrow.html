@@ -18,11 +18,12 @@ table{width:100%;border-collapse:collapse}th,td{border:1px solid var(--line);pad
 .tt .slot{background:#eaf4fd;height:75px;min-width:125px;text-align:left;padding:9px;vertical-align:top}.tt .slot.empty-slot{background:#f6f6f6}
 .class-chip{display:block;background:rgba(255,255,255,.86);border-radius:5px;padding:5px 7px;margin-bottom:4px;color:#1f67a0;font-weight:800;text-align:center}
 .period-side{display:flex;gap:4px;align-items:stretch}.section-label{writing-mode:vertical-rl;text-orientation:upright;background:var(--purple);color:white;border-radius:5px;padding:8px 6px;font-weight:800;letter-spacing:2px}
-@media(max-width:800px){.app{padding:9px}.hero h1{font-size:24px}}
+.overview-entry{display:flex;flex-direction:column;gap:3px;margin:4px 0;padding:5px 4px;border-radius:8px;background:#fff}.overview-entry .class-chip{margin:0}.overview-loc{font-size:12px;font-weight:700;color:#3d5770;line-height:1.2;white-space:normal}
+@media(max-width:800px){.app{padding:9px}.hero h1{font-size:24px}.overview-table{font-size:13px}.overview-table th,.overview-table td{padding:7px 5px}.overview-table .period-cell{white-space:normal}}
 @media print{.hero,.screen{display:none!important}.card{box-shadow:none;border:0}.app{padding:0}}
 </style></head>
 <body><div class="app"><header class="hero"><a href="index.html" class="home">← 回系統首頁</a><h1>115學年度啦啦舞借課系統</h1><p>201～214班｜09/03～09/11｜第1～8節｜5個練習地點</p></header>
-<section class="card screen"><div class="toolbar"><button class="tab active" data-view="list">借課查詢</button><button class="tab" data-view="timetable">地點使用課表</button><div class="grow"></div><button class="primary" onclick="window.print()">列印</button></div></section>
+<section class="card screen"><div class="toolbar"><button class="tab active" data-view="list">借課查詢</button><button class="tab" data-view="timetable">地點使用課表</button><button class="tab" data-view="overview">完整總覽</button><div class="grow"></div><button class="primary" onclick="window.print()">列印</button></div></section>
 <section id="listFilters" class="card screen"><div class="toolbar"><div class="field"><label>班級</label><select id="fc"></select></div><div class="field"><label>日期</label><select id="fd"></select></div><div class="field"><label>節次</label><select id="fp"></select></div><div class="field"><label>地點</label><select id="fl"></select></div></div></section>
 <section id="ttFilters" class="card screen" style="display:none"><div class="toolbar"><div class="field"><label>查看地點</label><select id="ttLoc"></select></div><span class="sub">選擇地點後，下方以「一週課表」方式顯示，各格直接顯示班級。</span></div></section>
 <section class="card"><h2 id="viewTitle">借課登記查詢</h2><div class="sub" id="summary"></div><div id="content"></div></section>
@@ -46,7 +47,28 @@ function renderTT(){
  D.forEach(d=>{let R=A.filter(r=>r.location===loc&&r.date===d&&r.period===p);h+=`<td class="slot ${R.length?'':'empty-slot'}">${R.length?R.map(r=>`<span class="class-chip">${r.cls}班</span>`).join(""):""}</td>`});h+='</tr>'});
  $("content").innerHTML=h+'</table></div>';
 }
-function render(){view==="list"?renderList():renderTT()}
+function dateIndex(d){return D.indexOf(d)}
+function periodIndex(p){return P.indexOf(p)}
+function renderOverview(){
+ $("viewTitle").textContent="借課完整總覽｜課表式";
+ $("summary").textContent="橫向為日期、直向為節次；每個格子直接顯示「班級＋地點」。";
+ let h='<div class="wrap"><table class="tt"><tr><th colspan="2"></th>'+D.map(d=>`<th class="day">${d}</th>`).join("")+'</tr>';
+ P.forEach(p=>{
+   h+='<tr>';
+   h+=`<th class="period-no">${p}</th><th class="time">${T[p].replace("–","<br>～<br>")}</th>`;
+   D.forEach(d=>{
+     let R=A.filter(r=>r.date===d&&r.period===p).sort((a,b)=>Number(a.cls)-Number(b.cls));
+     h+=`<td class="slot ${R.length?'':'empty-slot'}">`;
+     if(R.length){
+       h+=R.map(r=>`<div class="overview-entry"><span class="class-chip">${r.cls}班</span><span class="overview-loc">📍${r.location}</span></div>`).join("");
+     }
+     h+='</td>';
+   });
+   h+='</tr>';
+ });
+ $("content").innerHTML=h+'</table></div>';
+}
+function render(){view==="list"?renderList():view==="timetable"?renderTT():renderOverview()}
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{view=b.dataset.view;document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===b));$("listFilters").style.display=view==="list"?"block":"none";$("ttFilters").style.display=view==="timetable"?"block":"none";render()});
 ["fc","fd","fp","fl","ttLoc"].forEach(id=>$(id).onchange=render);render();
 </script></body></html>
